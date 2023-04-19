@@ -109,8 +109,13 @@ bool ParsedDerivation::canBuildLocally(Store & localStore) const
         && !drv.isBuiltin())
         return false;
 
-    for (auto & feature : getRequiredSystemFeatures())
+    auto features = getRequiredSystemFeatures();
+
+    for (auto & feature : features)
         if (!localStore.systemFeatures.get().count(feature)) return false;
+
+    for (auto & feature : localStore.mandatoryFeatures.get())
+        if (!features.count(feature)) return false;
 
     return true;
 }

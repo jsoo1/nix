@@ -46,6 +46,13 @@ static bool allSupportedLocally(Store & store, const std::set<std::string>& requ
     return true;
 }
 
+static bool allRequiredPresent(Store & store, const std::set<std::string>& requiredFeatures) {
+    for (auto & feature : store.mandatoryFeatures.get())
+        if (!requiredFeatures.count(feature)) return false;
+
+    return true;
+}
+
 static int main_build_remote(int argc, char * * argv)
 {
     {
@@ -118,7 +125,8 @@ static int main_build_remote(int argc, char * * argv)
             bool couldBuildLocally = maxBuildJobs > 0
                  &&  (  neededSystem == settings.thisSystem
                      || settings.extraPlatforms.get().count(neededSystem) > 0)
-                 &&  allSupportedLocally(*store, requiredFeatures);
+                 &&  allSupportedLocally(*store, requiredFeatures)
+                 &&  allRequiredPresent(*store, requiredFeatures);
             /* It's possible to build this locally right now: */
             bool canBuildLocally = amWilling && couldBuildLocally;
 

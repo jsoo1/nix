@@ -149,6 +149,10 @@ struct StoreConfig : public Config
         "system-features",
         "Optional features that the system this store builds on implements (like \"kvm\")."};
 
+    Setting<StringSet> mandatoryFeatures{this, {},
+        "mandatory-features",
+        "Optional features that the derivations this store builds on must have (like \"kvm\")."};
+
 };
 
 class Store : public std::enable_shared_from_this<Store>, public virtual StoreConfig

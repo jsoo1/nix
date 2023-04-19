@@ -677,6 +677,37 @@ public:
           that are used in Nixpkgs to route builds to specific machines.
         )", {}, false};
 
+    Setting<StringSet> mandatoryFeatures{
+        this,
+        {},
+        "mandatory-features",
+        R"(
+          A set of system “features” that a derivation must have to build on
+          this machine, e.g. `kvm`:
+
+              mandatory-features = kvm
+
+          Derivations that do not have all the features listed here in
+          `requiredSystemFeatures` may not build on this machine. For example,
+          the attribute
+
+              requiredSystemFeatures = [ "kvm" ];
+
+          ensures that the derivation can be built on a machine with the
+          only the `kvm` mandatory-feature (like above).
+
+          However, a derivation with the following:
+
+              requiredSystemFeatures = [ "kvm" ];
+
+          could not be built on a machine with the following mandatory-features:
+
+              mandatory-features = kvm nixos-test
+
+          This is useful when using remote-builds with a central coordinator
+          machine which may build only certain derivations but not all.
+        )", {}, false};
+
     Setting<Strings> substituters{
         this,
         Strings{"https://cache.nixos.org/"},
